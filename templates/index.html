@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparer des images</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('{{ url_for('static', filename='images/image.jpeg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .upload-files {
+            background: rgba(255, 255, 255, 0.8); /* Fond semi-transparent */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        .upload-files strong {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .upload-file {
+            margin-top: 15px;
+            margin-bottom: 20px;
+            display: block;
+            width: 100%;
+        }
+
+        #msg {
+            margin-top: 10px;
+            color: #ff0000;
+            font-size: 14px;
+        }
+
+        .upload-name {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .upload-name:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-files">
+        <form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+            <strong>Image de référence :</strong><br>
+            <input class="upload-file" id="reference-picker" type="file" name="reference_file" accept="image/*" required>
+            <strong>Image à analyser :</strong><br>
+            <input class="upload-file" id="file-picker" type="file" name="file" accept="image/*" required>
+            <div id="msg"></div>
+            <input class="upload-name" type="submit" value="Comparer les images" id="upload-button">
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#reference-picker, #file-picker").change(function () {
+            var input = this;
+            var supported = true;
+
+            for (var i = 0; i < input.files.length; i++) {
+                var ext = input.files[i].name.substring(input.files[i].name.lastIndexOf('.') + 1).toLowerCase();
+
+                if (ext !== 'jpg' && ext !== 'png') {
+                    supported = false;
+                    break;
+                }
+            }
+
+            if (supported) {
+                $("#msg").text("Les fichiers sont pris en charge").css("color", "green");
+            } else {
+                $("#msg").text("Les fichiers ne sont pas pris en charge").css("color", "red");
+                input.value = "";
+            }
+        });
+    </script>
+</body>
+</html>
